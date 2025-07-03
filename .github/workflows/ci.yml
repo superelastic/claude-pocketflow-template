@@ -30,7 +30,6 @@ jobs:
     - name: Install dependencies
       run: |
         uv pip install -e ".[dev]"
-        pip install pocketflow
 
     - name: Run pre-commit hooks
       run: |
