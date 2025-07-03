@@ -19,21 +19,43 @@ wheels/
 *.egg-info/
 .installed.cfg
 *.egg
+MANIFEST
 
-# Virtual environments
+# Virtual Environments
 venv/
-env/
 ENV/
+env/
+.venv/
 
-# Environment variables
-.env
-.env.local
+# UV
+.venv/
 
-# IDE
-.vscode/
+# Testing
+.tox/
+.coverage
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+.hypothesis/
+.pytest_cache/
+htmlcov/
+
+# IDEs
 .idea/
+.vscode/
 *.swp
 *.swo
+*~
+.project
+.pydevproject
+.cursor/
+
+# Environment
+.env
+.env.local
+.env.*.local
 
 # OS
 .DS_Store
@@ -41,27 +63,30 @@ Thumbs.db
 
 # Logs
 *.log
-
-# Testing
-.coverage
-.pytest_cache/
-htmlcov/
-
-# UV
-.venv/
-
-# Data and logs directories
-data/
 logs/
 
 # Temporary files
 *.tmp
-*.temp
+temp/
+tmp/
 
-# MyPy
+# Project specific
+planning/scratchpad/*
+!planning/scratchpad/.gitkeep
+.taskmaster/
+
+# Documentation builds
+docs/_build/
+docs/.doctrees/
+
+# Database
+*.db
+*.sqlite
+*.sqlite3
+
+# Cache
+.cache/
+.ruff_cache/
 .mypy_cache/
 .dmypy.json
 dmypy.json
-
-# Pre-commit
-.pre-commit-cache/

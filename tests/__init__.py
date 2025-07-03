@@ -1,1 +1,1 @@
-"""Test package for Claude PocketFlow Template."""
+"""Tests package."""
