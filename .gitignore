@@ -49,3 +49,19 @@ htmlcov/
 
 # UV
 .venv/
+
+# Data and logs directories
+data/
+logs/
+
+# Temporary files
+*.tmp
+*.temp
+
+# MyPy
+.mypy_cache/
+.dmypy.json
+dmypy.json
+
+# Pre-commit
+.pre-commit-cache/

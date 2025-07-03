@@ -1,248 +1,414 @@
 # API Reference
 
-## Node Base Class
+Complete API documentation for the claude-pocketflow-template components.
 
-### AbstractNode
-Base interface that all nodes should implement.
+## Core Components
 
-```python
-from abc import ABC, abstractmethod
-from typing import Dict, Any
+### Config Class
 
-class AbstractNode(ABC):
-    @abstractmethod
-    def prep(self, store: Dict[str, Any]) -> Dict[str, Any]:
-        """Prepare and validate inputs."""
-        pass
-    
-    @abstractmethod
-    def exec(self, store: Dict[str, Any]) -> Dict[str, Any]:
-        """Execute main logic."""
-        pass
-    
-    @abstractmethod
-    def post(self, store: Dict[str, Any]) -> Dict[str, Any]:
-        """Post-process and cleanup."""
-        pass
-```
-
-## Built-in Nodes
-
-### InitNode
-Initializes the flow with default values.
-
-**Store Keys:**
-- Input: None required
-- Output: 
-  - `initialized`: bool
-  - `timestamp`: str
-  - `flow_id`: str
-
-**Example:**
-```python
-node = InitNode()
-store = {}
-store = node.prep(store)
-store = node.exec(store)
-store = node.post(store)
-# store now contains initialization data
-```
-
-### ValidationNode
-Validates store data against schemas.
-
-**Store Keys:**
-- Input:
-  - `data`: Dict[str, Any] - Data to validate
-  - `schema`: Dict[str, Any] - JSON schema
-- Output:
-  - `validation_result`: bool
-  - `validation_errors`: List[str]
-
-### ErrorHandlerNode
-Handles errors and determines retry strategy.
-
-**Store Keys:**
-- Input:
-  - `error`: str - Error message
-  - `retry_count`: int - Current retry attempt
-- Output:
-  - `action`: str - "retry", "fail", or "continue"
-  - `retry_delay`: int - Seconds to wait before retry
-
-## Flow Classes
-
-### BaseFlow
-Base class for all flows.
+Configuration management with environment variable support.
 
 ```python
-class BaseFlow:
-    def __init__(self):
-        self.flow_definition = {}
-        self.nodes = {}
-    
-    def register_node(self, name: str, node: AbstractNode) -> None:
-        """Register a node instance."""
-        pass
-    
-    def run(self, initial_store: Dict[str, Any]) -> Dict[str, Any]:
-        """Execute the flow."""
-        pass
-```
+from claude_pocketflow_template.config import Config
 
-### FlowBuilder
-Utility for building flows programmatically.
+# Create with defaults from environment
+config = Config()
 
-```python
-builder = FlowBuilder()
-builder.add_node("start", InitNode())
-builder.add_node("validate", ValidationNode())
-builder.add_transition("start", "success", "validate")
-builder.add_transition("validate", "error", "error_handler")
-flow = builder.build()
-```
-
-## Utility Classes
-
-### APIClient
-Base class for API integrations.
-
-```python
-class APIClient:
-    def __init__(self, base_url: str, api_key: str):
-        self.base_url = base_url
-        self.api_key = api_key
-    
-    async def request(
-        self, 
-        method: str, 
-        endpoint: str, 
-        **kwargs
-    ) -> Dict[str, Any]:
-        """Make an API request."""
-        pass
-```
-
-### RetryableClient
-Wrapper that adds retry logic to any client.
-
-```python
-client = APIClient(base_url, api_key)
-retryable = RetryableClient(
-    client,
-    max_retries=3,
-    backoff_factor=2
+# Or with explicit values
+config = Config(
+    anthropic_api_key="sk-...",
+    debug=True,
+    log_level="DEBUG",
+    flow_timeout=600,
+    max_retries=5,
+    data_dir=Path("/custom/data"),
+    logs_dir=Path("/custom/logs")
 )
 ```
 
-## Store Utilities
+**Properties:**
+- `anthropic_api_key` (str): API key for Anthropic Claude
+- `debug` (bool): Enable debug mode (default: False)
+- `log_level` (str): Logging level (default: "INFO")
+- `flow_timeout` (int): Timeout for flow execution in seconds (default: 300)
+- `max_retries` (int): Maximum retry attempts (default: 3)
+- `data_dir` (Path): Directory for data storage (default: "data")
+- `logs_dir` (Path): Directory for logs (default: "logs")
 
-### StoreValidator
-Validates store contents.
+**Environment Variables:**
+- `ANTHROPIC_API_KEY`: Set API key
+- `DEBUG`: Enable debug mode ("true"/"false")
+- `LOG_LEVEL`: Set log level
+- `FLOW_TIMEOUT`: Flow timeout in seconds
+- `MAX_RETRIES`: Max retry attempts
+- `DATA_DIR`: Data directory path
+- `LOGS_DIR`: Logs directory path
+
+### FlowDaemon Class
+
+Manages the lifecycle of multiple flows.
 
 ```python
-validator = StoreValidator()
-validator.require_keys(store, ["user_id", "action"])
-validator.validate_types(store, {"user_id": str, "action": str})
+from claude_pocketflow_template.daemon import FlowDaemon
+
+daemon = FlowDaemon(config)
+
+# Add flows
+daemon.add_flow("main_flow", flow_instance)
+daemon.add_flow("secondary_flow", another_flow)
+
+# Start daemon
+await daemon.start()
+
+# Stop daemon
+await daemon.stop()
 ```
 
-### StoreSnapshot
-Creates and restores store snapshots.
+**Methods:**
+
+#### `__init__(config: Config)`
+Initialize the daemon with configuration.
+
+#### `add_flow(name: str, flow: Flow) -> None`
+Add a flow to the daemon.
+- `name`: Unique identifier for the flow
+- `flow`: PocketFlow Flow instance
+
+#### `remove_flow(name: str) -> Optional[Flow]`
+Remove and return a flow from the daemon.
+- Returns: The removed flow or None if not found
+
+#### `async start() -> None`
+Start the daemon and initialize all flows.
+
+#### `async stop() -> None`
+Stop the daemon and clean up resources.
+
+## PocketFlow Integration
+
+### Creating Nodes
+
+Basic node structure for PocketFlow:
 
 ```python
-snapshot = StoreSnapshot()
-backup = snapshot.create(store)
-# ... modifications to store ...
-restored = snapshot.restore(backup)
+from pocketflow import Node
+from typing import Dict, Any
+
+class CustomNode(Node):
+    """Custom node implementation."""
+    
+    def __init__(self, config: Config):
+        self.config = config
+        self.logger = logger.bind(node=self.__class__.__name__)
+    
+    async def run(self, context: Dict[str, Any]) -> Dict[str, Any]:
+        """Execute node logic."""
+        try:
+            # Validate inputs
+            self._validate_inputs(context)
+            
+            # Process data
+            result = await self._process(context)
+            
+            # Return success
+            return {
+                "status": "success",
+                "output": result,
+                "next": "continue"
+            }
+        except ValidationError as e:
+            return {
+                "status": "validation_error",
+                "error": str(e),
+                "next": "error_handler"
+            }
+        except Exception as e:
+            self.logger.error(f"Node failed: {e}")
+            return {
+                "status": "error",
+                "error": str(e),
+                "next": "retry"
+            }
+```
+
+### Flow Definition
+
+Create flows with nodes and transitions:
+
+```python
+from pocketflow import Flow
+
+# Create flow
+flow = Flow(
+    name="example_flow",
+    description="Example flow with error handling"
+)
+
+# Add nodes
+flow.add_node("start", StartNode(config))
+flow.add_node("process", ProcessNode(config))
+flow.add_node("error_handler", ErrorHandlerNode(config))
+flow.add_node("complete", CompleteNode(config))
+
+# Define transitions
+flow.add_edge("start", "process", condition="success")
+flow.add_edge("process", "complete", condition="success")
+flow.add_edge("process", "error_handler", condition="error")
+flow.add_edge("error_handler", "process", condition="retry")
+flow.add_edge("error_handler", "complete", condition="skip")
+```
+
+### Context Management
+
+The context dictionary passed between nodes:
+
+```python
+context = {
+    # Input data
+    "input": {...},
+    
+    # Node results
+    "node_name": {
+        "status": "success",
+        "output": {...},
+        "timestamp": "2024-01-01T12:00:00Z"
+    },
+    
+    # Flow metadata
+    "_flow_id": "unique-flow-id",
+    "_start_time": datetime.now(),
+    "_retries": {"node_name": 0}
+}
 ```
 
 ## Testing Utilities
 
-### NodeTestCase
-Base class for node tests.
+### Fixtures
 
 ```python
-class TestMyNode(NodeTestCase):
-    def test_happy_path(self):
-        node = MyNode()
-        store = {"input": "value"}
-        result = self.run_node(node, store)
-        self.assert_store_contains(result, "output")
+@pytest.fixture
+def test_config():
+    """Test configuration."""
+    return Config(
+        anthropic_api_key="test_key",
+        debug=True,
+        log_level="DEBUG"
+    )
+
+@pytest.fixture
+def mock_flow():
+    """Mock flow for testing."""
+    flow = MagicMock(spec=Flow)
+    flow.run = AsyncMock()
+    return flow
+
+@pytest.fixture
+async def daemon_with_flow(test_config, mock_flow):
+    """Daemon with a test flow."""
+    daemon = FlowDaemon(test_config)
+    daemon.add_flow("test_flow", mock_flow)
+    yield daemon
+    await daemon.stop()
 ```
 
-### FlowTestCase
-Base class for flow tests.
+### Test Patterns
 
 ```python
-class TestMyFlow(FlowTestCase):
-    def test_complete_flow(self):
-        flow = MyFlow()
-        result = self.run_flow(flow, {"user": "test"})
-        self.assert_flow_success(result)
+# Test node execution
+async def test_node_success():
+    node = CustomNode(config)
+    context = {"input": "test_data"}
+    
+    result = await node.run(context)
+    
+    assert result["status"] == "success"
+    assert "output" in result
+
+# Test error handling
+async def test_node_error():
+    node = CustomNode(config)
+    context = {}  # Missing required input
+    
+    result = await node.run(context)
+    
+    assert result["status"] == "validation_error"
+    assert "error" in result
+
+# Test flow execution
+async def test_flow_execution(daemon_with_flow):
+    await daemon_with_flow.start()
+    
+    # Flow should be initialized
+    assert "test_flow" in daemon_with_flow.flows
 ```
 
-## Common Store Keys
+## Logging
 
-### Standard Keys
-- `status`: Current status of the operation
-- `error`: Error message if any
-- `timestamp`: When the operation occurred
-- `user_id`: User identifier
-- `request_id`: Unique request identifier
+The template uses Loguru for structured logging:
 
-### Action Keys
-- `action`: Next action to take
-- `next_node`: Explicit next node (overrides flow)
-- `retry_count`: Number of retries attempted
-- `retry_delay`: Delay before next retry
-
-### Data Keys
-- `input_data`: Original input
-- `processed_data`: Transformed data
-- `output_data`: Final output
-- `metadata`: Additional information
-
-## Error Codes
-
-### Node Errors
-- `NODE_VALIDATION_ERROR`: Input validation failed
-- `NODE_EXECUTION_ERROR`: Error during exec()
-- `NODE_TIMEOUT`: Node execution timeout
-
-### Flow Errors
-- `FLOW_INVALID_TRANSITION`: No valid transition
-- `FLOW_MAX_RETRIES`: Exceeded retry limit
-- `FLOW_CIRCULAR_REFERENCE`: Circular flow detected
-
-### Utility Errors
-- `API_CONNECTION_ERROR`: Cannot reach service
-- `API_AUTHENTICATION_ERROR`: Invalid credentials
-- `API_RATE_LIMIT`: Rate limit exceeded
-
-## Configuration
-
-### Environment Variables
-```bash
-# API Keys
-OPENAI_API_KEY=sk-...
-WEATHER_API_KEY=...
-
-# Flow Configuration
-MAX_RETRIES=3
-RETRY_BACKOFF=2
-NODE_TIMEOUT=30
-
-# Logging
-LOG_LEVEL=INFO
-LOG_FORMAT=json
-```
-
-### Flow Configuration
 ```python
-flow_config = {
-    "max_retries": 3,
-    "timeout": 300,
-    "parallel_execution": True,
-    "store_backend": "memory"  # or "redis"
+from loguru import logger
+
+# Configure logging
+logger.add(
+    "logs/app.log",
+    rotation="10 MB",
+    retention="1 week",
+    level=config.log_level
+)
+
+# Use in nodes
+logger.info("Processing started", node="CustomNode", input_size=len(data))
+logger.error("Processing failed", error=str(e), node="CustomNode")
+```
+
+## Error Handling
+
+### Standard Error Response
+
+```python
+{
+    "status": "error",
+    "error": "Descriptive error message",
+    "error_type": "ValidationError",
+    "node": "ProcessNode",
+    "timestamp": "2024-01-01T12:00:00Z",
+    "next": "error_handler"
 }
+```
+
+### Retry Logic
+
+```python
+class RetryableNode(Node):
+    """Node with retry capability."""
+    
+    async def run(self, context: Dict[str, Any]) -> Dict[str, Any]:
+        retries = context.get("_retries", {}).get(self.name, 0)
+        
+        if retries >= self.config.max_retries:
+            return {
+                "status": "max_retries_exceeded",
+                "error": f"Failed after {retries} attempts",
+                "next": "error_handler"
+            }
+        
+        try:
+            result = await self._attempt_operation()
+            return {"status": "success", "output": result}
+        except Exception as e:
+            context["_retries"][self.name] = retries + 1
+            return {
+                "status": "retry",
+                "error": str(e),
+                "attempt": retries + 1,
+                "next": "retry"
+            }
+```
+
+## Performance Optimization
+
+### Async Best Practices
+
+```python
+# Concurrent operations
+async def process_batch(items: List[Any]) -> List[Any]:
+    """Process items concurrently."""
+    async def process_item(item):
+        # Process individual item
+        return await some_async_operation(item)
+    
+    # Process all items concurrently
+    tasks = [process_item(item) for item in items]
+    return await asyncio.gather(*tasks)
+
+# Connection pooling
+class APINode(Node):
+    """Node with connection pooling."""
+    
+    def __init__(self, config: Config):
+        self.config = config
+        self.client = httpx.AsyncClient(
+            limits=httpx.Limits(max_connections=10),
+            timeout=httpx.Timeout(30.0)
+        )
+    
+    async def cleanup(self):
+        """Clean up resources."""
+        await self.client.aclose()
+```
+
+### Memory Management
+
+```python
+# Stream large data
+async def process_large_file(file_path: Path):
+    """Process large file in chunks."""
+    async with aiofiles.open(file_path, 'r') as f:
+        async for chunk in f:
+            # Process chunk
+            yield process_chunk(chunk)
+
+# Clear large objects
+def clear_context(context: Dict[str, Any]) -> Dict[str, Any]:
+    """Remove large objects from context."""
+    keys_to_clear = ["large_data", "temp_results"]
+    for key in keys_to_clear:
+        context.pop(key, None)
+    return context
+```
+
+## Type Definitions
+
+Common type definitions used throughout the template:
+
+```python
+from typing import TypedDict, Literal, Optional
+
+class NodeResult(TypedDict):
+    """Standard node result structure."""
+    status: Literal["success", "error", "retry", "skip"]
+    output: Optional[Any]
+    error: Optional[str]
+    next: Optional[str]
+
+class FlowContext(TypedDict, total=False):
+    """Flow execution context."""
+    input: Any
+    _flow_id: str
+    _start_time: datetime
+    _retries: Dict[str, int]
+    _metadata: Dict[str, Any]
+```
+
+## Environment Setup
+
+### Development Environment
+
+```bash
+# Install with all development dependencies
+uv pip install -e ".[dev]"
+
+# Run development server with hot reload
+uv run python -m claude_pocketflow_template --debug --reload
+```
+
+### Production Environment
+
+```bash
+# Install production dependencies only
+uv pip install -e .
+
+# Run with production settings
+python -m claude_pocketflow_template
+```
+
+## Version Information
+
+Access version information:
+
+```python
+from claude_pocketflow_template import __version__
+
+print(f"Version: {__version__}")
 ```

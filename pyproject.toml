@@ -1,0 +1,192 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "claude-pocketflow-template"
+dynamic = ["version"]
+description = "A template for building AI flows with PocketFlow and Claude"
+readme = "README.md"
+requires-python = ">=3.10"
+license = "MIT"
+keywords = ["ai", "pocketflow", "claude", "template"]
+authors = [
+    { name = "Your Name", email = "your.email@example.com" },
+]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+]
+dependencies = [
+    "pocketflow>=0.1.0",
+    "anthropic>=0.25.0",
+    "python-dotenv>=1.0.0",
+    "loguru>=0.7.0",
+    "pydantic>=2.0.0",
+    "httpx>=0.25.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.0.0",
+    "pytest-asyncio>=0.24.0",
+    "pytest-cov>=6.0.0",
+    "ruff>=0.8.0",
+    "pyright>=1.1.0",
+    "pre-commit>=4.0.0",
+]
+
+[project.urls]
+Documentation = "https://github.com/yourusername/claude-pocketflow-template#readme"
+Issues = "https://github.com/yourusername/claude-pocketflow-template/issues"
+Source = "https://github.com/yourusername/claude-pocketflow-template"
+
+[tool.hatch.version]
+path = "src/claude_pocketflow_template/__about__.py"
+
+[tool.hatch.envs.default]
+dependencies = [
+    "coverage[toml]",
+    "pytest",
+    "pytest-asyncio",
+    "pytest-cov",
+]
+
+[tool.hatch.envs.default.scripts]
+test = "pytest {args:tests}"
+test-cov = "coverage run -m pytest {args:tests}"
+cov-report = [
+    "- coverage combine",
+    "coverage report",
+]
+cov-html = [
+    "- coverage combine", 
+    "coverage html",
+]
+
+[tool.hatch.envs.lint]
+detached = true
+dependencies = [
+    "ruff>=0.8.0",
+    "pyright>=1.1.0",
+]
+
+[tool.hatch.envs.lint.scripts]
+typing = "pyright {args:src/claude_pocketflow_template tests}"
+style = [
+    "ruff check {args:.}",
+    "ruff format --check --diff {args:.}",
+]
+fmt = [
+    "ruff check --fix {args:.}",
+    "ruff format {args:.}",
+    "style",
+]
+all = [
+    "style",
+    "typing",
+]
+
+[tool.ruff]
+target-version = "py310"
+line-length = 88
+select = [
+    "A",
+    "ARG",
+    "B",
+    "C",
+    "DTZ",
+    "E",
+    "EM",
+    "F",
+    "FBT",
+    "I",
+    "ICN",
+    "ISC",
+    "N",
+    "PLC",
+    "PLE",
+    "PLR",
+    "PLW",
+    "Q",
+    "RUF",
+    "S",
+    "T",
+    "TID",
+    "UP",
+    "W",
+    "YTT",
+]
+ignore = [
+    # Allow non-abstract empty methods in abstract base classes
+    "B027",
+    # Allow boolean positional values in function calls, like `dict.get(... True)`
+    "FBT003",
+    # Ignore checks for possible passwords
+    "S105", "S106", "S107",
+    # Ignore complexity
+    "C901", "PLR0911", "PLR0912", "PLR0913", "PLR0915",
+]
+unfixable = [
+    # Don't touch unused imports
+    "F401",
+]
+
+[tool.ruff.isort]
+known-first-party = ["claude_pocketflow_template"]
+
+[tool.ruff.flake8-tidy-imports]
+ban-relative-imports = "all"
+
+[tool.ruff.per-file-ignores]
+# Tests can use magic values, assertions, and relative imports
+"tests/**/*" = ["PLR2004", "S101", "TID252"]
+
+[tool.coverage.run]
+source_pkgs = ["claude_pocketflow_template", "tests"]
+branch = true
+parallel = true
+omit = [
+    "src/claude_pocketflow_template/__about__.py",
+]
+
+[tool.coverage.paths]
+claude_pocketflow_template = ["src/claude_pocketflow_template", "*/claude-pocketflow-template/src/claude_pocketflow_template"]
+tests = ["tests", "*/claude-pocketflow-template/tests"]
+
+[tool.coverage.report]
+exclude_lines = [
+    "no cov",
+    "if __name__ == .__main__.:",
+    "if TYPE_CHECKING:",
+]
+
+[tool.pytest.ini_options]
+minversion = "6.0"
+addopts = [
+    "-ra",
+    "--strict-markers",
+    "--strict-config",
+    "--cov=claude_pocketflow_template",
+    "--cov-report=term-missing",
+    "--cov-fail-under=80",
+]
+testpaths = ["tests"]
+asyncio_mode = "auto"
+asyncio_default_fixture_loop_scope = "function"
+
+[tool.pyright]
+include = ["src/claude_pocketflow_template", "tests"]
+exclude = [".venv", "build", "dist"]
+reportMissingImports = true
+reportMissingTypeStubs = false
+pythonVersion = "3.10"
+pythonPlatform = "All"

@@ -1,167 +1,243 @@
-# Template Usage Guide
+# Claude PocketFlow Template - Usage Guide
 
-## Getting Started with This Template
+## 🚀 Quick Start
 
-1. Click "Use this template" to create your new repository
-2. Clone your new repository locally
-3. Follow the setup instructions in README.md
-4. Customize the project for your specific needs
+This template provides a production-ready foundation for building AI-powered applications with PocketFlow and Claude.
 
-## Customization Checklist
+### Using This Template
 
-- [ ] Update `README.md` with your project name and description
-- [ ] Modify `main.py` with your specific flow logic
-- [ ] Add your nodes in `nodes.py`
-- [ ] Configure environment variables in `.env`
-- [ ] Update documentation in `docs/`
-- [ ] Add your specific dependencies to `pyproject.toml`
+1. **Create Your Repository**
+   - Click the "Use this template" button on GitHub
+   - Name your new repository
+   - Choose public or private visibility
 
-## Template Structure
+2. **Clone and Setup**
+   ```bash
+   git clone <your-new-repository-url>
+   cd <your-repository-name>
+   
+   # Make setup script executable (Linux/Mac)
+   chmod +x setup.sh
+   
+   # Run setup
+   ./setup.sh
+   
+   # Or on Windows/if permission issues:
+   bash setup.sh
+   ```
 
-This template provides:
-- ✅ PocketFlow node/flow architecture
-- ✅ Python best practices setup
-- ✅ Testing framework (pytest)
-- ✅ Code quality tools (ruff, pyright)
-- ✅ AI assistant integration (.cursorrules, CLAUDE.md)
-- ✅ Comprehensive documentation
+3. **Configure Environment**
+   ```bash
+   cp .env.example .env
+   # Edit .env with your ANTHROPIC_API_KEY
+   ```
 
-## Support
+## ✅ What's Included
 
-For issues with the template itself, please open an issue in the template repository.
-For issues with your specific project, customize this section with your own support information. 
+### Core Features
+- **🏗️ Project Structure**: Pre-configured Python package with src layout
+- **🧪 Testing Suite**: 44+ tests with pytest, achieving 88%+ coverage
+- **🔧 Modern Tooling**: UV, Ruff, Pyright, pre-commit hooks
+- **🤖 AI Integration**: Claude API integration ready
+- **📦 CI/CD Pipeline**: GitHub Actions for automated testing
+- **📚 Documentation**: Comprehensive docs for humans and AI
 
-## i have a python project in cursor ide with a PRD. I want to use https://github.com/eyaltoledano/claude-task-master to create tasks that will guide the code development. i plan on using task master at the command line:
+### Development Tools
+- **Makefile**: Common commands (`make test`, `make dev`, etc.)
+- **Setup Script**: One-command project initialization
+- **Pre-commit Hooks**: Automatic code quality checks
+- **Type Checking**: Full type hints with Pyright
 
-Installation
+## 📝 Customization Checklist
 
-# Install globally
+After creating your repository from this template:
 
-npm install -g task-master-ai
+### Essential Updates
+- [ ] Update `pyproject.toml`:
+  - [ ] Change `name` from "claude-pocketflow-template"
+  - [ ] Update `description`
+  - [ ] Modify `authors` with your information
+  - [ ] Update repository URLs
+- [ ] Update `README.md`:
+  - [ ] Replace template content with your project description
+  - [ ] Update badges if using
+  - [ ] Add your specific installation instructions
+- [ ] Configure `.env`:
+  - [ ] Add your `ANTHROPIC_API_KEY`
+  - [ ] Set any project-specific environment variables
 
-# OR install locally within your project
+### Code Customization
+- [ ] Rename the package:
+  ```bash
+  # Rename src/claude_pocketflow_template to your package name
+  mv src/claude_pocketflow_template src/your_package_name
+  
+  # Update imports in tests
+  find tests -type f -name "*.py" -exec sed -i 's/claude_pocketflow_template/your_package_name/g' {} +
+  ```
+- [ ] Create your first flow:
+  - [ ] Add nodes in `src/your_package_name/nodes.py`
+  - [ ] Define flow in `src/your_package_name/flows.py`
+  - [ ] Update daemon initialization
+- [ ] Add your dependencies:
+  ```bash
+  uv add your-required-package
+  ```
 
-npm install task-master-ai
+### Documentation Updates
+- [ ] Update `docs/design.md` with your product requirements
+- [ ] Modify `CLAUDE.md` with project-specific AI instructions
+- [ ] Update `.cursorrules` for your coding standards
+- [ ] Customize `docs/developer-guide.md` for your workflows
 
-Initialize a new project
+## 🏃 Development Workflow
 
-# If installed globally
-
-task-master init
-
-# If installed locally
-
-npx task-master init
-
-WHen the tasks are created i want to use claude-code in a wsl ubuntu terminal window to develop the code.  so taskmaster would read the PRD and create tasks, and then claude-code would work from the defined tasks to create the code, I assume. is this correct? is this the best way to work with these tools?
-
-To establish an effective workflow combining Claude Task Master and Claude Code for Python development in Cursor IDE with WSL Ubuntu, follow this structured approach:
-
-## Integrated Workflow Architecture for AI-Driven Development
-
-### 1. Environment Configuration Strategy
-
-**Cross-Platform Setup Requirements:**
-
-- **Windows-WSL File System Mapping:**
-Store projects in `/mnt/c/...` paths for seamless access between Cursor (Windows) and WSL terminal[^7][^12]
-
+### 1. Initial Development
 ```bash
-mkdir /mnt/c/dev/python_project && cd $_
+# Activate virtual environment
+source .venv/bin/activate
+
+# Start with the example structure
+cd src/your_package_name/
+
+# Create your first node
+touch nodes/my_first_node.py
 ```
 
-- **Node.js/Python Toolchain:**
-WSL requires explicit Node.js installation for Task Master CLI[^12]:
-
+### 2. Test-Driven Development
 ```bash
-curl -fsSL https://deb.nodesource.com/setup_18.x | sudo -E bash -
-sudo apt-get install -y nodejs
+# Write test first
+touch tests/test_my_first_node.py
+
+# Run tests continuously
+make test
+
+# Check coverage
+make test-cov
 ```
 
-
-### 2. Task Master Initialization Protocol
-
-**Project Scaffolding:**
-
+### 3. Code Quality
 ```bash
-# Global installation preferred for CLI access
-npm install -g task-master-ai
-task-master init --language python --framework flask
+# Before committing, run all checks
+make dev
+
+# Or individually:
+make format      # Format code
+make lint        # Check style
+make type-check  # Verify types
 ```
 
-This creates:
+## 🔧 Configuration Options
 
-- `tasks/tasks.json` (structured task graph)
-- `.taskmaster/config.yaml` (project-specific settings)
-- `scripts/prd.md` (PRD template)
+### Environment Variables
+The template supports these configuration options:
+- `ANTHROPIC_API_KEY`: Your Claude API key (required)
+- `DEBUG`: Enable debug logging (true/false)
+- `LOG_LEVEL`: Logging verbosity (DEBUG/INFO/WARNING/ERROR)
+- `FLOW_TIMEOUT`: Maximum flow execution time in seconds
+- `MAX_RETRIES`: Retry attempts for failed operations
+- `DATA_DIR`: Directory for data storage
+- `LOGS_DIR`: Directory for log files
 
-**PRD Placement Best Practices[^1][^3]:**
-
-```text
-project_root/
-├── scripts/
-│   └── prd.md
-├── tasks/
-│   ├── tasks.json
-│   └── task_001.md
-└── src/
-    └── ... (Python code)
+### Adding New Configuration
+1. Update `src/your_package_name/config.py`:
+```python
+class Config(BaseSettings):
+    # Add your new config field
+    my_new_setting: str = Field("default_value", env="MY_NEW_SETTING")
 ```
 
+2. Update `.env.example` with the new variable
+3. Document in `docs/api-reference.md`
 
-### 3. Task Generation Pipeline
+## 🚀 Deployment Preparation
 
-**PRD Parsing Command:**
+### Before deploying:
+- [ ] Update `LICENSE` file with your chosen license
+- [ ] Review and update security settings
+- [ ] Configure production environment variables
+- [ ] Set up monitoring and logging
+- [ ] Create deployment documentation
 
+### Docker Support (Optional)
+Create a `Dockerfile`:
+```dockerfile
+FROM python:3.11-slim
+WORKDIR /app
+RUN pip install uv
+COPY pyproject.toml .
+COPY src/ src/
+RUN uv pip install -e .
+RUN pip install pocketflow
+CMD ["python", "-m", "your_package_name"]
+```
+
+## 🤝 Contributing to Your Project
+
+Set up contribution guidelines:
+1. Create `CONTRIBUTING.md`
+2. Define code review process
+3. Set up issue templates
+4. Configure PR templates
+
+## 📚 Learning Resources
+
+### PocketFlow Development
+- Review example flows in `tests/test_flows.py`
+- Study the FlowDaemon pattern in `src/claude_pocketflow_template/daemon.py`
+- Check PocketFlow documentation for advanced patterns
+
+### AI-Assisted Development
+- Use Cursor AI with the included `.cursorrules`
+- Leverage Claude Code with `CLAUDE.md` instructions
+- Follow test-driven development for best results
+
+## 🆘 Troubleshooting
+
+### Common Issues
+
+**Module Import Errors**
 ```bash
-task-master parse-prd scripts/prd.md --output-format markdown --ai-model claude-3.7-sonnet
+# Ensure you're in virtual environment
+which python  # Should show .venv/bin/python
+
+# Reinstall in development mode
+uv pip install -e ".[dev]"
 ```
 
-Key parameters:
+**Test Discovery Issues**
+```bash
+# Run from project root
+python -m pytest tests/
 
-- `--dependency-graph` (visualize task relationships)
-- `--complexity-threshold 5` (auto-split complex tasks)
-- `--context @Codebase` (analyze existing
+# Or use make
+make test
+```
 
-<div style="text-align: center">⁂</div>
+**Type Checking Errors**
+```bash
+# Install missing type stubs
+uv pip install types-requests
 
-[^1]: claude-task-master
+# Ignore specific files if needed
+# Add to pyproject.toml [tool.pyright] exclude
+```
 
-[^2]: https://docs.task-master.dev
+## 🎯 Next Steps
 
-[^3]: https://www.youtube.com/watch?v=BvWzQ4W0QXA
+1. **Build Your First Flow**: Start with a simple flow to understand the pattern
+2. **Add External Integrations**: Create utility classes for APIs you need
+3. **Expand Test Coverage**: Aim for 90%+ coverage
+4. **Set Up CI/CD**: Customize GitHub Actions for your deployment needs
+5. **Create Documentation**: Document your specific flows and APIs
 
-[^4]: https://docs.anthropic.com/en/docs/claude-code/overview
+## 📞 Support
 
-[^5]: https://github.com/anthropics/claude-code-action
+- **Template Issues**: Open an issue in the original template repository
+- **PocketFlow Questions**: Check PocketFlow documentation
+- **Claude API**: Refer to Anthropic's documentation
+- **Your Project**: Update this section with your support channels
 
-[^6]: https://www.reddit.com/r/ClaudeAI/comments/1kv4mfx/how_to_use_claude_code_in_vs_code_in_windows_via/
+---
 
-[^7]: https://samelogic.com/blog/claude-task-master-just-fixed-our-vibe-coding-workflow-heres-what-happened
-
-[^8]: https://github.com/eighty9nine/task-master
-
-[^9]: https://www.anthropic.com/engineering/claude-code-best-practices
-
-[^10]: https://docs.anthropic.com/en/docs/claude-code/github-actions
-
-[^11]: https://www.datacamp.com/tutorial/claude-opus-4-claude-code
-
-[^12]: https://www.reddit.com/r/ClaudeAI/comments/1jlhg7g/task_master_how_i_solved_cursor_code_slop_and/
-
-[^13]: https://www.reddit.com/r/ClaudeAI/comments/1ixave9/whats_claude_code/
-
-[^14]: https://www.youtube.com/watch?v=H05Y-UJded0
-
-[^15]: https://www.anthropic.com/claude-code
-
-[^16]: https://github.com/eyaltoledano/claude-task-master/blob/main/docs/tutorial.md
-
-[^17]: https://x.com/EyalToledano/status/1907636727247941640
-
-[^18]: https://taskmaster.tv/tasks
-
-[^19]: https://docs.anthropic.com/en/docs/claude-code/cli-usage
-
-[^20]: https://github.com/anthropics/claude-code
-
+Remember to remove this TEMPLATE.md file once you've completed the setup, or convert it to your own setup guide!
