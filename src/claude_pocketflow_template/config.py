@@ -66,3 +66,28 @@ class Config:
         if self.max_retries < 0:
             msg = f"max_retries must be non-negative, got: {self.max_retries}"
             raise ValueError(msg)
+
+    def dict(self, exclude: set[str] | None = None) -> dict[str, Any]:
+        """Convert config to dictionary representation.
+
+        Args:
+            exclude: Set of attribute names to exclude from the dict
+
+        Returns:
+            Dictionary representation of config
+        """
+        exclude = exclude or set()
+        result = {}
+
+        for attr_name in dir(self):
+            # Skip private attributes, methods, and excluded attributes
+            if (
+                attr_name.startswith("_")
+                or callable(getattr(self, attr_name))
+                or attr_name in exclude
+            ):
+                continue
+
+            result[attr_name] = getattr(self, attr_name)
+
+        return result

@@ -66,6 +66,9 @@ class FlowDaemon:
         self._running = True
         self.logger.info("Starting flow daemon")
 
+        # Initialize flows
+        await self._initialize_flows()
+
         # Start the main daemon loop
         self._task = asyncio.create_task(self._run_loop())
 
@@ -135,3 +138,13 @@ class FlowDaemon:
     def list_flows(self) -> list[str]:
         """List all registered flow names."""
         return list(self.flows.keys())
+
+    async def _initialize_flows(self) -> None:
+        """Initialize flows on daemon startup.
+
+        This method can be overridden by subclasses to perform
+        custom flow initialization logic.
+        """
+        # Default implementation does nothing
+        # Subclasses can override to load flows from config, database, etc.
+        pass
