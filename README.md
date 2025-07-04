@@ -1,25 +1,29 @@
 # claude-pocketflow-template
 
-A production-ready template for building AI-powered applications with PocketFlow and Claude. Features comprehensive testing, modern Python tooling, and AI-assisted development support.
+A **solo developer-friendly** template for building AI-powered applications with PocketFlow and Claude. Features pragmatic tooling that helps without hindering your development flow.
+
+> 🎯 **Philosophy**: Tools should help you build features, not fight you over formatting. This template uses a "minimal CI" approach - quality tools when you want them, never blocking your progress.
 
 ## 🚀 Use This Template
 
 Click the "Use this template" button above to create a new repository based on this template.
 
+**📖 New to this approach?** See **[DEVELOPMENT.md](DEVELOPMENT.md)** for the complete solo developer workflow.
+
 ## ✨ Features
 
-- **🧪 Comprehensive Testing**: 44+ tests with pytest, achieving 88%+ coverage
-- **🔧 Modern Python Tooling**: UV package manager, Ruff formatter, Pyright type checker
+- **🚀 Solo Dev Optimized**: Tools help instead of block - no CI fatigue!
+- **🧪 Smart Testing**: Core functionality tests, skips brittle checks
+- **🔧 Pragmatic Tooling**: Ruff, Pyright, pytest - all advisory, never blocking
 - **🤖 AI Development Ready**: Optimized for Cursor AI and Claude Code
-- **📦 Production Ready**: Pre-commit hooks, GitHub Actions CI/CD, structured logging
-- **🏗️ Clean Architecture**: Modular design with config management and flow orchestration
-- **📚 Extensive Documentation**: For both human developers and AI assistants
+- **⚡ Fast Iteration**: Pre-commit hooks auto-fix but won't fail commits
+- **📚 Clear Documentation**: Both technical docs and pragmatic workflow guides
 
 ## Quick Start
 
 ### Prerequisites
 
-- Python 3.10+ (3.10, 3.11, or 3.12 supported)
+- Python 3.10+
 - UV package manager (installs automatically with setup script)
 - Anthropic API key for Claude integration
 
@@ -74,48 +78,34 @@ uv run pre-commit install
 
 ## 🛠️ Development
 
-### Using the Makefile
+See **[DEVELOPMENT.md](DEVELOPMENT.md)** for the complete solo developer workflow.
+
+### Quick Commands
 
 ```bash
-make help        # Show all available commands
-make test        # Run tests
-make test-cov    # Run tests with coverage report
-make format      # Format code with ruff
-make lint        # Check code style
-make type-check  # Run type checking
-make dev         # Run all checks (format, lint, type-check, test)
+# Core development (nothing blocks you)
+pytest                           # Run core tests
+git commit -m "Working feature"  # Auto-formatting, never fails
+
+# Optional quality tools (use when you want)
+make -f Makefile.dev help        # See all available commands
+make -f Makefile.dev format      # Format code
+make -f Makefile.dev check       # All quality checks (warnings only)
 ```
 
-### Running Tests
+### Testing Philosophy
+
+This template uses **pragmatic testing** - core functionality is thoroughly tested, but brittle checks (like exact directory structure) are skipped to avoid CI fatigue.
 
 ```bash
-# Run all tests
-uv run pytest
+# Run core tests (skips brittle ones automatically)
+pytest
 
-# Run with coverage
-uv run pytest --cov=claude_pocketflow_template --cov-report=html
+# Run all tests including skipped ones
+pytest --run-skipped
 
-# Run specific test file
-uv run pytest tests/test_flows.py
-
-# Run tests matching pattern
-uv run pytest -k "test_config"
-```
-
-### Code Quality Tools
-
-```bash
-# Format code
-uv run ruff format .
-
-# Fix linting issues
-uv run ruff check . --fix
-
-# Type checking
-uv run pyright
-
-# Run pre-commit on all files
-uv run pre-commit run --all-files
+# Coverage is optional, not required
+pytest --cov=claude_pocketflow_template --cov-report=html
 ```
 
 ## 📁 Project Structure
@@ -183,37 +173,34 @@ This template is optimized for AI-powered development:
 
 ### Development Workflow
 
-1. Use Cursor AI for code generation with project rules
-2. Run `make dev` to ensure code quality
-3. Use Claude Code for complex refactoring
-4. Commit with conventional commit messages
+1. Write code - tools help, never block
+2. `git commit` - pre-commit auto-fixes style but won't fail
+3. `git push` - CI runs essential checks, reports warnings only
+4. Use quality tools when you want: `make -f Makefile.dev check`
+
+See **[DEVELOPMENT.md](DEVELOPMENT.md)** for the complete workflow.
 
 ## 🧪 Testing Strategy
 
-The template includes a comprehensive test suite:
+**Pragmatic testing** - focuses on functionality over perfection:
 
-- **Unit Tests**: Config management, daemon lifecycle
-- **Integration Tests**: Flow execution, error handling
-- **Performance Tests**: Concurrent operations, memory usage
-- **Edge Cases**: Error conditions, boundary testing
+- **Core Tests**: Config, flows, nodes - the stuff that matters
+- **Integration Tests**: Real workflows and error handling
+- **Skipped Tests**: Brittle filesystem/structure checks
+- **Optional Coverage**: Available but not required
 
-Run tests with coverage:
-
-```bash
-make test-cov
-# Opens HTML coverage report in browser
-```
+Tests run fast and focus on catching real bugs, not enforcing arbitrary standards.
 
 ## 🚢 Deployment
 
 ### GitHub Actions CI/CD
 
-The template includes a complete CI/CD pipeline that:
+**Solo developer-friendly CI** that helps without hindering:
 
-- Runs on Python 3.10, 3.11, and 3.12
-- Executes all tests with coverage reporting
-- Performs security scanning with pip-audit
-- Enforces code quality with pre-commit hooks
+- Runs essential tests on Python 3.10
+- Reports style/type issues as warnings (doesn't fail builds)
+- Skips brittle checks that cause CI fatigue
+- Focuses on functional correctness over perfect compliance
 
 ### Environment Variables
 
@@ -231,19 +218,21 @@ LOGS_DIR=/path/to/logs
 
 ## 🤝 Contributing
 
+**Streamlined process for solo or collaborative development:**
+
 1. Fork the repository
 2. Create a feature branch (`git checkout -b feature/amazing-feature`)
-3. Run `make dev` to ensure code quality
-4. Commit your changes (following conventional commits)
-5. Push to the branch (`git push origin feature/amazing-feature`)
+3. Write code - tools help, don't worry about perfect style
+4. `git commit` - pre-commit auto-fixes issues but won't block
+5. Push to branch - CI reports issues but doesn't fail builds
 6. Open a Pull Request
 
 ### Development Guidelines
 
-- Write tests for new features
-- Update documentation as needed
-- Follow the code style (enforced by Ruff)
-- Ensure type hints are complete (checked by Pyright)
+- **Focus on functionality** - tools handle style automatically
+- **Test important features** - but don't obsess over coverage
+- **Use quality tools when helpful** - `make -f Makefile.dev check`
+- **Iterate fast** - commit early, refine later
 
 ## 📈 Roadmap
 
