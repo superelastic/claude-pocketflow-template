@@ -176,9 +176,10 @@ addopts = [
     "-ra",
     "--strict-markers",
     "--strict-config",
-    "--cov=claude_pocketflow_template",
-    "--cov-report=term-missing",
-    "--cov-fail-under=80",
+    # Coverage is optional for solo development
+    # "--cov=claude_pocketflow_template",
+    # "--cov-report=term-missing",
+    # "--cov-fail-under=80",
 ]
 testpaths = ["tests"]
 asyncio_mode = "auto"

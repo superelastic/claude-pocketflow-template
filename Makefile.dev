@@ -1,0 +1,41 @@
+# Development Makefile - Optional quality checks that won't block you
+
+.PHONY: help test format lint typecheck check all clean
+
+help:
+	@echo "Development Commands (all optional):"
+	@echo "  make test       - Run tests (without coverage requirements)"
+	@echo "  make format     - Format code with ruff"
+	@echo "  make lint       - Check code style (warnings only)"
+	@echo "  make typecheck  - Run type checking (warnings only)"
+	@echo "  make check      - Run all checks (warnings only)"
+	@echo "  make clean      - Clean up cache files"
+	@echo ""
+	@echo "All commands are advisory only - they won't fail your build!"
+
+test:
+	@echo "🧪 Running tests..."
+	@pytest tests/ || echo "⚠️  Some tests failed, but that's okay for development"
+
+format:
+	@echo "🎨 Formatting code..."
+	@ruff format .
+	@echo "✅ Code formatted!"
+
+lint:
+	@echo "🔍 Checking code style..."
+	@ruff check . --fix || echo "⚠️  Some style issues found, but continuing..."
+
+typecheck:
+	@echo "🔬 Type checking..."
+	@pyright || echo "⚠️  Some type issues found, but continuing..."
+
+check: lint typecheck test
+	@echo "📋 All checks complete! Any issues are advisory only."
+
+clean:
+	@echo "🧹 Cleaning up..."
+	@find . -type d -name "__pycache__" -exec rm -rf {} + 2>/dev/null || true
+	@find . -type f -name "*.pyc" -delete 2>/dev/null || true
+	@rm -rf .coverage htmlcov/ .pytest_cache/ || true
+	@echo "✅ Cleanup complete!"

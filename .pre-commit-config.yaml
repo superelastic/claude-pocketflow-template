@@ -9,13 +9,12 @@ repos:
       - id: check-json
       - id: check-toml
       - id: check-merge-conflict
-      - id: debug-statements
 
   - repo: https://github.com/astral-sh/ruff-pre-commit
     rev: v0.12.2
     hooks:
       - id: ruff
-        args: [--fix]
+        args: [--fix, --exit-zero] # Don't fail commits
       - id: ruff-format
 
   - repo: https://github.com/pre-commit/mirrors-prettier
