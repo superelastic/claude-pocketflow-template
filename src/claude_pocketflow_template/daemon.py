@@ -32,20 +32,20 @@ class FlowDaemon:
         self.flows[name] = flow
         self.logger.info(f"Added flow: {name}")
 
-    def remove_flow(self, name: str) -> bool:
+    def remove_flow(self, name: str) -> Any | None:
         """Remove a flow from the daemon.
 
         Args:
             name: Name of the flow to remove
 
         Returns:
-            True if flow was removed, False if not found
+            The removed flow object, or None if not found
         """
         if name in self.flows:
-            del self.flows[name]
+            flow = self.flows.pop(name)
             self.logger.info(f"Removed flow: {name}")
-            return True
-        return False
+            return flow
+        return None
 
     def get_flow(self, name: str) -> Any | None:
         """Get a flow by name.
@@ -64,7 +64,7 @@ class FlowDaemon:
             return
 
         self._running = True
-        self.logger.info("Starting flow daemon")
+        self.logger.info("Starting Flow Daemon...")
 
         # Initialize flows
         await self._initialize_flows()
@@ -78,7 +78,7 @@ class FlowDaemon:
             return
 
         self._running = False
-        self.logger.info("Stopping flow daemon")
+        self.logger.info("Stopping Flow Daemon...")
 
         if self._task:
             self._task.cancel()
@@ -145,6 +145,7 @@ class FlowDaemon:
         This method can be overridden by subclasses to perform
         custom flow initialization logic.
         """
+        self.logger.info("Initializing flows...")
         # Default implementation does nothing
         # Subclasses can override to load flows from config, database, etc.
         pass

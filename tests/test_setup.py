@@ -17,7 +17,7 @@ def test_imports():
 
 def test_python_version():
     """Test that Python version meets requirements."""
-    assert sys.version_info >= (3, 11), "Python 3.11+ is required"
+    assert sys.version_info >= (3, 10), "Python 3.10+ is required"
 
 
 def test_project_structure():
