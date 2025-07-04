@@ -1,12 +1,18 @@
 """Tests for the flow daemon."""
 
 import asyncio
-from unittest.mock import AsyncMock, MagicMock, patch
+from unittest.mock import AsyncMock, patch
 
 import pytest
-from pocketflow import Flow
 
 from claude_pocketflow_template.daemon import FlowDaemon
+
+
+class MockFlow:
+    """Mock Flow class for testing."""
+
+    def __init__(self, name: str = "test_flow"):
+        self.name = name
 
 
 class TestFlowDaemonBasics:
@@ -22,7 +28,7 @@ class TestFlowDaemonBasics:
     def test_add_single_flow(self, test_config):
         """Test adding a single flow."""
         daemon = FlowDaemon(test_config)
-        mock_flow = MagicMock(spec=Flow)
+        mock_flow = MockFlow("test_flow")
 
         daemon.add_flow("test_flow", mock_flow)
 
@@ -37,7 +43,7 @@ class TestFlowDaemonBasics:
 
         for i in range(5):
             flow_name = f"flow_{i}"
-            mock_flow = MagicMock(spec=Flow)
+            mock_flow = MockFlow()
             flows[flow_name] = mock_flow
             daemon.add_flow(flow_name, mock_flow)
 
@@ -48,7 +54,7 @@ class TestFlowDaemonBasics:
     def test_remove_existing_flow(self, test_config):
         """Test removing an existing flow."""
         daemon = FlowDaemon(test_config)
-        mock_flow = MagicMock(spec=Flow)
+        mock_flow = MockFlow()
 
         daemon.add_flow("test_flow", mock_flow)
         removed_flow = daemon.remove_flow("test_flow")
@@ -69,8 +75,8 @@ class TestFlowDaemonBasics:
     def test_replace_existing_flow(self, test_config):
         """Test replacing an existing flow with same name."""
         daemon = FlowDaemon(test_config)
-        old_flow = MagicMock(spec=Flow)
-        new_flow = MagicMock(spec=Flow)
+        old_flow = MockFlow()
+        new_flow = MockFlow()
 
         daemon.add_flow("test_flow", old_flow)
         daemon.add_flow("test_flow", new_flow)  # Replace
@@ -183,7 +189,7 @@ class TestFlowDaemonWithFlows:
     async def test_daemon_with_single_flow(self, test_config):
         """Test daemon managing a single flow."""
         daemon = FlowDaemon(test_config)
-        mock_flow = MagicMock(spec=Flow)
+        mock_flow = MockFlow()
         daemon._initialize_flows = AsyncMock()
 
         daemon.add_flow("test_flow", mock_flow)
@@ -207,7 +213,7 @@ class TestFlowDaemonWithFlows:
         flows = {}
         for i in range(3):
             flow_name = f"flow_{i}"
-            mock_flow = MagicMock(spec=Flow)
+            mock_flow = MockFlow()
             flows[flow_name] = mock_flow
             daemon.add_flow(flow_name, mock_flow)
 
@@ -231,7 +237,7 @@ class TestFlowDaemonWithFlows:
 
         # Add flows
         for i in range(3):
-            mock_flow = MagicMock(spec=Flow)
+            mock_flow = MockFlow()
             daemon.add_flow(f"flow_{i}", mock_flow)
 
         start_task = asyncio.create_task(daemon.start())
@@ -254,7 +260,7 @@ class TestFlowDaemonLogging:
     def test_add_flow_logging(self, mock_logger, test_config):
         """Test that adding flows is logged."""
         daemon = FlowDaemon(test_config)
-        mock_flow = MagicMock(spec=Flow)
+        mock_flow = MockFlow()
 
         daemon.add_flow("test_flow", mock_flow)
 
@@ -264,7 +270,7 @@ class TestFlowDaemonLogging:
     def test_remove_flow_logging(self, mock_logger, test_config):
         """Test that removing flows is logged."""
         daemon = FlowDaemon(test_config)
-        mock_flow = MagicMock(spec=Flow)
+        mock_flow = MockFlow()
 
         daemon.add_flow("test_flow", mock_flow)
         daemon.remove_flow("test_flow")
@@ -341,7 +347,7 @@ class TestFlowDaemonEdgeCases:
     def test_add_flow_with_empty_name(self, test_config):
         """Test adding flow with empty name."""
         daemon = FlowDaemon(test_config)
-        mock_flow = MagicMock(spec=Flow)
+        mock_flow = MockFlow()
 
         daemon.add_flow("", mock_flow)
 
@@ -351,7 +357,7 @@ class TestFlowDaemonEdgeCases:
     def test_add_flow_with_special_characters(self, test_config):
         """Test adding flow with special characters in name."""
         daemon = FlowDaemon(test_config)
-        mock_flow = MagicMock(spec=Flow)
+        mock_flow = MockFlow()
         special_name = "flow-with_special.chars@123"
 
         daemon.add_flow(special_name, mock_flow)
@@ -400,7 +406,7 @@ class TestFlowDaemonConcurrency:
         daemon = FlowDaemon(test_config)
 
         async def add_flow(i):
-            mock_flow = MagicMock(spec=Flow)
+            mock_flow = MockFlow()
             daemon.add_flow(f"concurrent_flow_{i}", mock_flow)
 
         # Add flows concurrently
@@ -417,7 +423,7 @@ class TestFlowDaemonConcurrency:
 
         # Add flows first
         for i in range(10):
-            mock_flow = MagicMock(spec=Flow)
+            mock_flow = MockFlow()
             daemon.add_flow(f"concurrent_flow_{i}", mock_flow)
 
         async def remove_flow(i):
@@ -434,7 +440,7 @@ class TestFlowDaemonConcurrency:
         daemon = FlowDaemon(test_config)
 
         async def add_flow(i):
-            mock_flow = MagicMock(spec=Flow)
+            mock_flow = MockFlow()
             daemon.add_flow(f"add_flow_{i}", mock_flow)
 
         async def remove_flow(i):
@@ -442,7 +448,7 @@ class TestFlowDaemonConcurrency:
 
         # Pre-populate some flows to remove
         for i in range(5):
-            mock_flow = MagicMock(spec=Flow)
+            mock_flow = MockFlow()
             daemon.add_flow(f"remove_flow_{i}", mock_flow)
 
         # Mix of add and remove operations
