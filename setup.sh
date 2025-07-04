@@ -55,7 +55,7 @@ mkdir -p .mdc
 # Create basic package structure if it doesn't exist
 if [ ! -f "src/claude_pocketflow_template/__init__.py" ]; then
     echo "📝 Creating basic package structure..."
-    
+
     # Create __init__.py
     cat > src/claude_pocketflow_template/__init__.py << 'EOF'
 """Claude PocketFlow Template - A template for building AI flows with PocketFlow and Claude."""
@@ -88,27 +88,27 @@ from pydantic import BaseSettings, Field
 
 class Config(BaseSettings):
     """Application configuration."""
-    
+
     # API Configuration
     anthropic_api_key: str = Field(..., env="ANTHROPIC_API_KEY")
-    
+
     # Application Settings
     debug: bool = Field(False, env="DEBUG")
     log_level: str = Field("INFO", env="LOG_LEVEL")
-    
+
     # Flow Configuration
     flow_timeout: int = Field(300, env="FLOW_TIMEOUT")
     max_retries: int = Field(3, env="MAX_RETRIES")
-    
+
     # File Paths
     data_dir: Path = Field(Path("data"), env="DATA_DIR")
     logs_dir: Path = Field(Path("logs"), env="LOGS_DIR")
-    
+
     class Config:
         env_file = ".env"
         env_file_encoding = "utf-8"
         case_sensitive = False
-        
+
     def __post_init__(self):
         """Create necessary directories."""
         self.data_dir.mkdir(exist_ok=True)
@@ -130,21 +130,21 @@ from .config import Config
 
 class FlowDaemon:
     """Main daemon for managing AI flows."""
-    
+
     def __init__(self, config: Config):
         """Initialize the flow daemon."""
         self.config = config
         self.flows: Dict[str, Flow] = {}
         self._running = False
-        
+
     async def start(self) -> None:
         """Start the flow daemon."""
         logger.info("Starting Flow Daemon...")
         self._running = True
-        
+
         # Initialize flows here
         await self._initialize_flows()
-        
+
         # Main daemon loop
         while self._running:
             try:
@@ -152,29 +152,29 @@ class FlowDaemon:
             except KeyboardInterrupt:
                 logger.info("Received shutdown signal")
                 break
-                
+
         await self.stop()
-        
+
     async def stop(self) -> None:
         """Stop the flow daemon."""
         logger.info("Stopping Flow Daemon...")
         self._running = False
-        
+
         # Clean up flows
         for flow_name, flow in self.flows.items():
             logger.info(f"Stopping flow: {flow_name}")
             # Add flow cleanup logic here
-            
+
     async def _initialize_flows(self) -> None:
         """Initialize all flows."""
         logger.info("Initializing flows...")
         # Add your flow initialization logic here
-        
+
     def add_flow(self, name: str, flow: Flow) -> None:
         """Add a flow to the daemon."""
         self.flows[name] = flow
         logger.info(f"Added flow: {name}")
-        
+
     def remove_flow(self, name: str) -> Optional[Flow]:
         """Remove a flow from the daemon."""
         if name in self.flows:

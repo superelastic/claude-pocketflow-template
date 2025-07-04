@@ -1,8 +1,6 @@
 {
   "enableAllProjectMcpServers": false,
   "permissions": {
-    "allow": [
-      "WebFetch(domain:raw.githubusercontent.com)"
-    ]
+    "allow": ["WebFetch(domain:raw.githubusercontent.com)"]
   }
 }

@@ -5,6 +5,7 @@ This comprehensive guide explains how to build AI-powered applications using the
 ## Overview
 
 The claude-pocketflow-template provides a production-ready foundation for building AI applications with:
+
 - **PocketFlow**: Node-based flow orchestration framework
 - **Modern Python Tooling**: UV, Ruff, Pyright, pytest
 - **AI-Assisted Development**: Optimized for Cursor AI and Claude Code
@@ -13,7 +14,9 @@ The claude-pocketflow-template provides a production-ready foundation for buildi
 ## Getting Started
 
 ### Prerequisites
+
 Before you begin, ensure you have:
+
 - Python 3.10, 3.11, or 3.12 installed
 - An Anthropic API key for Claude integration
 - Basic familiarity with Python async/await
@@ -23,6 +26,7 @@ Before you begin, ensure you have:
 #### Running the Setup Script
 
 **On Linux/Mac:**
+
 ```bash
 # The script should already be executable, but if not:
 chmod +x setup.sh
@@ -32,6 +36,7 @@ chmod +x setup.sh
 ```
 
 **On Windows (Git Bash/WSL):**
+
 ```bash
 # In Git Bash or WSL
 ./setup.sh
@@ -41,12 +46,14 @@ bash setup.sh
 ```
 
 **Alternative using Make:**
+
 ```bash
 # If make is installed
 make setup
 ```
 
 **What the setup script does:**
+
 1. Checks Python version (3.10+ required)
 2. Installs UV package manager if needed
 3. Creates virtual environment
@@ -56,6 +63,7 @@ make setup
 7. Runs initial code quality checks
 
 **After setup, activate the virtual environment:**
+
 ```bash
 # Linux/Mac
 source .venv/bin/activate
@@ -75,6 +83,7 @@ source .venv/Scripts/activate
 After running the setup script, you'll have the following structure automatically created:
 
 ### Core Components
+
 ```
 src/claude_pocketflow_template/
 ├── __init__.py          # Package exports
@@ -86,6 +95,7 @@ src/claude_pocketflow_template/
 **Note:** The setup script (`./setup.sh`) automatically creates this structure - you don't need to create these files manually. If any files are missing, simply run the setup script again.
 
 ### Configuration Management
+
 The template uses Pydantic for robust configuration:
 
 ```python
@@ -103,6 +113,7 @@ config = Config(
 ```
 
 ### Flow Daemon
+
 The FlowDaemon manages your application's flows:
 
 ```python
@@ -112,10 +123,10 @@ from claude_pocketflow_template.config import Config
 async def main():
     config = Config()
     daemon = FlowDaemon(config)
-    
+
     # Add your flows
     daemon.add_flow("main_flow", my_flow)
-    
+
     # Start the daemon
     await daemon.start()
 ```
@@ -123,6 +134,7 @@ async def main():
 ## Creating Flows with PocketFlow
 
 ### Basic Flow Structure
+
 ```python
 from pocketflow import Flow
 
@@ -144,6 +156,7 @@ flow.add_edge("process", "start", condition="retry")
 ```
 
 ### Node Implementation
+
 Nodes in PocketFlow typically follow this pattern:
 
 ```python
@@ -152,13 +165,13 @@ from pocketflow import Node
 
 class ProcessNode(Node):
     """A node that processes data."""
-    
+
     async def run(self, context: Dict[str, Any]) -> Dict[str, Any]:
         """Execute the node's logic."""
         try:
             # Your processing logic here
             result = await self.process_data(context["input"])
-            
+
             return {
                 "status": "success",
                 "output": result,
@@ -170,7 +183,7 @@ class ProcessNode(Node):
                 "error": str(e),
                 "next": "retry"
             }
-    
+
     async def process_data(self, data: Any) -> Any:
         """Process the input data."""
         # Implementation here
@@ -178,16 +191,17 @@ class ProcessNode(Node):
 ```
 
 ### (Example) Integrating with Claude
+
 ```python
 from anthropic import AsyncAnthropic
 from claude_pocketflow_template.config import Config
 
 class ClaudeNode(Node):
     """A node that interacts with Claude."""
-    
+
     def __init__(self, config: Config):
         self.client = AsyncAnthropic(api_key=config.anthropic_api_key)
-    
+
     async def run(self, context: Dict[str, Any]) -> Dict[str, Any]:
         """Generate a response using Claude."""
         try:
@@ -199,7 +213,7 @@ class ClaudeNode(Node):
                     "content": context["prompt"]
                 }]
             )
-            
+
             return {
                 "status": "success",
                 "response": response.content[0].text,
@@ -216,6 +230,7 @@ class ClaudeNode(Node):
 ## Testing Your Application
 
 ### Writing Tests
+
 The template includes comprehensive testing examples:
 
 ```python
@@ -240,12 +255,13 @@ def flow_daemon(test_config):
 async def test_flow_execution(flow_daemon, mock_flow):
     """Test basic flow execution."""
     flow_daemon.add_flow("test_flow", mock_flow)
-    
+
     # Your test logic here
     assert "test_flow" in flow_daemon.flows
 ```
 
 ### Running Tests
+
 ```bash
 # Run all tests
 make test
@@ -261,7 +277,9 @@ uv run pytest -k "config" -v
 ```
 
 ### Test Coverage
+
 The template aims for high test coverage:
+
 - Unit tests for individual components
 - Integration tests for flow execution
 - Edge case and error handling tests
@@ -270,6 +288,7 @@ The template aims for high test coverage:
 ## Development Workflow
 
 ### 1. Code Quality Tools
+
 ```bash
 # Format your code
 make format
@@ -285,13 +304,17 @@ make dev
 ```
 
 ### 2. Pre-commit Hooks
+
 Pre-commit hooks run automatically on git commit:
+
 - Code formatting with Ruff
 - YAML/JSON formatting with Prettier
 - File cleanup (trailing whitespace, EOF)
 
 ### 3. Continuous Integration
+
 The GitHub Actions workflow:
+
 - Tests on Python 3.10, 3.11, and 3.12
 - Runs all quality checks
 - Generates coverage reports
@@ -300,24 +323,28 @@ The GitHub Actions workflow:
 ## Best Practices
 
 ### 1. Configuration Management
+
 - Use environment variables for sensitive data
 - Provide sensible defaults
 - Validate configuration early
 - Use type hints for all config fields
 
 ### 2. Flow Design
+
 - Keep nodes focused and single-purpose
 - Use clear, descriptive node names
 - Handle errors gracefully
 - Log important state transitions
 
 ### 3. Testing Strategy
+
 - Write tests alongside your code
 - Test both success and failure paths
 - Mock external services
 - Use fixtures for common test data
 
 ### 4. Code Organization
+
 ```python
 # Good: Focused, reusable nodes
 class FetchDataNode(Node):
@@ -335,6 +362,7 @@ class DoEverythingNode(Node):
 ```
 
 ### 5. Error Handling
+
 ```python
 async def run(self, context: Dict[str, Any]) -> Dict[str, Any]:
     """Execute with proper error handling."""
@@ -342,10 +370,10 @@ async def run(self, context: Dict[str, Any]) -> Dict[str, Any]:
         # Validate inputs
         if not context.get("input"):
             raise ValueError("Missing required input")
-        
+
         # Process data
         result = await self.process(context["input"])
-        
+
         return {
             "status": "success",
             "output": result
@@ -361,6 +389,7 @@ async def run(self, context: Dict[str, Any]) -> Dict[str, Any]:
 ## Advanced Topics
 
 ### Async/Await Best Practices
+
 ```python
 # Good: Concurrent execution
 async def process_multiple(self, items: List[Any]) -> List[Any]:
@@ -379,23 +408,25 @@ async def process_multiple_slow(self, items: List[Any]) -> List[Any]:
 ```
 
 ### Performance Optimization
+
 - Use connection pooling for external services
 - Implement caching where appropriate
 - Monitor memory usage in long-running flows
 - Use async operations for I/O-bound tasks
 
 ### Logging Best Practices
+
 ```python
 from loguru import logger
 
 class DataNode(Node):
     """Node with proper logging."""
-    
+
     async def run(self, context: Dict[str, Any]) -> Dict[str, Any]:
         """Execute with detailed logging."""
         logger.info(f"Starting {self.__class__.__name__}")
         logger.debug(f"Context keys: {list(context.keys())}")
-        
+
         try:
             result = await self.process(context)
             logger.info(f"Successfully processed {len(result)} items")
@@ -408,6 +439,7 @@ class DataNode(Node):
 ## Deployment Considerations
 
 ### Environment Setup
+
 ```bash
 # Production environment variables
 export ANTHROPIC_API_KEY="your-production-key"
@@ -420,6 +452,7 @@ export LOGS_DIR=/var/app/logs
 ```
 
 ### Docker Deployment
+
 ```dockerfile
 FROM python:3.11-slim
 
@@ -441,6 +474,7 @@ CMD ["python", "-m", "claude_pocketflow_template"]
 ```
 
 ### Monitoring and Observability
+
 - Use structured logging with Loguru
 - Implement health check endpoints
 - Track flow execution metrics
@@ -451,6 +485,7 @@ CMD ["python", "-m", "claude_pocketflow_template"]
 ### Common Issues
 
 **Import Errors**
+
 ```bash
 # Ensure virtual environment is activated
 source .venv/bin/activate
@@ -460,6 +495,7 @@ uv pip install -e ".[dev]"
 ```
 
 **Type Checking Failures**
+
 ```bash
 # Install type stubs
 uv pip install types-requests types-aiofiles
@@ -469,6 +505,7 @@ uv run pyright --verbose
 ```
 
 **Test Failures**
+
 ```bash
 # Run tests with more detail
 uv run pytest -vvs

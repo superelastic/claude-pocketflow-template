@@ -12,16 +12,17 @@ This template provides a production-ready foundation for building AI-powered app
    - Choose public or private visibility
 
 2. **Clone and Setup**
+
    ```bash
    git clone <your-new-repository-url>
    cd <your-repository-name>
-   
+
    # Make setup script executable (Linux/Mac)
    chmod +x setup.sh
-   
+
    # Run setup
    ./setup.sh
-   
+
    # Or on Windows/if permission issues:
    bash setup.sh
    ```
@@ -35,6 +36,7 @@ This template provides a production-ready foundation for building AI-powered app
 ## ✅ What's Included
 
 ### Core Features
+
 - **🏗️ Project Structure**: Pre-configured Python package with src layout
 - **🧪 Testing Suite**: 44+ tests with pytest, achieving 88%+ coverage
 - **🔧 Modern Tooling**: UV, Ruff, Pyright, pre-commit hooks
@@ -43,6 +45,7 @@ This template provides a production-ready foundation for building AI-powered app
 - **📚 Documentation**: Comprehensive docs for humans and AI
 
 ### Development Tools
+
 - **Makefile**: Common commands (`make test`, `make dev`, etc.)
 - **Setup Script**: One-command project initialization
 - **Pre-commit Hooks**: Automatic code quality checks
@@ -53,6 +56,7 @@ This template provides a production-ready foundation for building AI-powered app
 After creating your repository from this template:
 
 ### Essential Updates
+
 - [ ] Update `pyproject.toml`:
   - [ ] Change `name` from "claude-pocketflow-template"
   - [ ] Update `description`
@@ -67,14 +71,17 @@ After creating your repository from this template:
   - [ ] Set any project-specific environment variables
 
 ### Code Customization
+
 - [ ] Rename the package:
+
   ```bash
   # Rename src/claude_pocketflow_template to your package name
   mv src/claude_pocketflow_template src/your_package_name
-  
+
   # Update imports in tests
   find tests -type f -name "*.py" -exec sed -i 's/claude_pocketflow_template/your_package_name/g' {} +
   ```
+
 - [ ] Create your first flow:
   - [ ] Add nodes in `src/your_package_name/nodes.py`
   - [ ] Define flow in `src/your_package_name/flows.py`
@@ -85,6 +92,7 @@ After creating your repository from this template:
   ```
 
 ### Documentation Updates
+
 - [ ] Update `docs/design.md` with your product requirements
 - [ ] Modify `CLAUDE.md` with project-specific AI instructions
 - [ ] Update `.cursorrules` for your coding standards
@@ -93,6 +101,7 @@ After creating your repository from this template:
 ## 🏃 Development Workflow
 
 ### 1. Initial Development
+
 ```bash
 # Activate virtual environment
 source .venv/bin/activate
@@ -105,6 +114,7 @@ touch nodes/my_first_node.py
 ```
 
 ### 2. Test-Driven Development
+
 ```bash
 # Write test first
 touch tests/test_my_first_node.py
@@ -117,6 +127,7 @@ make test-cov
 ```
 
 ### 3. Code Quality
+
 ```bash
 # Before committing, run all checks
 make dev
@@ -130,7 +141,9 @@ make type-check  # Verify types
 ## 🔧 Configuration Options
 
 ### Environment Variables
+
 The template supports these configuration options:
+
 - `ANTHROPIC_API_KEY`: Your Claude API key (required)
 - `DEBUG`: Enable debug logging (true/false)
 - `LOG_LEVEL`: Logging verbosity (DEBUG/INFO/WARNING/ERROR)
@@ -140,7 +153,9 @@ The template supports these configuration options:
 - `LOGS_DIR`: Directory for log files
 
 ### Adding New Configuration
+
 1. Update `src/your_package_name/config.py`:
+
 ```python
 class Config(BaseSettings):
     # Add your new config field
@@ -153,6 +168,7 @@ class Config(BaseSettings):
 ## 🚀 Deployment Preparation
 
 ### Before deploying:
+
 - [ ] Update `LICENSE` file with your chosen license
 - [ ] Review and update security settings
 - [ ] Configure production environment variables
@@ -160,7 +176,9 @@ class Config(BaseSettings):
 - [ ] Create deployment documentation
 
 ### Docker Support (Optional)
+
 Create a `Dockerfile`:
+
 ```dockerfile
 FROM python:3.11-slim
 WORKDIR /app
@@ -175,6 +193,7 @@ CMD ["python", "-m", "your_package_name"]
 ## 🤝 Contributing to Your Project
 
 Set up contribution guidelines:
+
 1. Create `CONTRIBUTING.md`
 2. Define code review process
 3. Set up issue templates
@@ -183,11 +202,13 @@ Set up contribution guidelines:
 ## 📚 Learning Resources
 
 ### PocketFlow Development
+
 - Review example flows in `tests/test_flows.py`
 - Study the FlowDaemon pattern in `src/claude_pocketflow_template/daemon.py`
 - Check PocketFlow documentation for advanced patterns
 
 ### AI-Assisted Development
+
 - Use Cursor AI with the included `.cursorrules`
 - Leverage Claude Code with `CLAUDE.md` instructions
 - Follow test-driven development for best results
@@ -197,6 +218,7 @@ Set up contribution guidelines:
 ### Common Issues
 
 **Module Import Errors**
+
 ```bash
 # Ensure you're in virtual environment
 which python  # Should show .venv/bin/python
@@ -206,6 +228,7 @@ uv pip install -e ".[dev]"
 ```
 
 **Test Discovery Issues**
+
 ```bash
 # Run from project root
 python -m pytest tests/
@@ -215,6 +238,7 @@ make test
 ```
 
 **Type Checking Errors**
+
 ```bash
 # Install missing type stubs
 uv pip install types-requests

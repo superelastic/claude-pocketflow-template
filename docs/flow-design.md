@@ -1,17 +1,20 @@
 # Flow Design Document
 
 ## Overview
+
 This document outlines the design patterns and specifications for PocketFlow flows in the claude-pocketflow template.
 
 ## Flow Architecture
 
 ### Core Concepts
+
 1. **Flows** are directed graphs of nodes
 2. **Nodes** are atomic units of work
 3. **Transitions** are action-based connections between nodes
 4. **Store** is the shared state passed between nodes
 
 ### Flow Definition Structure
+
 ```python
 flow_definition = {
     "node_id": {
@@ -27,25 +30,33 @@ flow_definition = {
 ## Standard Flow Patterns
 
 ### 1. Linear Flow
+
 Simple sequential execution.
+
 ```
 Start → Process → Validate → Complete
 ```
 
 ### 2. Conditional Flow
+
 Branching based on conditions.
+
 ```
 Start → Check → [Branch A | Branch B] → Merge → Complete
 ```
 
 ### 3. Error Handling Flow
+
 Robust error recovery.
+
 ```
 Start → Process → [Success → Complete | Error → Retry → Process]
 ```
 
 ### 4. Parallel Flow
+
 Concurrent execution paths.
+
 ```
 Start → Split → [Path A & Path B] → Join → Complete
 ```
@@ -53,6 +64,7 @@ Start → Split → [Path A & Path B] → Join → Complete
 ## Example Flows
 
 ### Basic Data Processing Flow
+
 ```python
 data_processing_flow = {
     "start": {
@@ -88,6 +100,7 @@ data_processing_flow = {
 ```
 
 ### API Integration Flow
+
 ```python
 api_flow = {
     "start": {
@@ -118,15 +131,19 @@ api_flow = {
 ## Node Design Guidelines
 
 ### 1. Single Responsibility
+
 Each node should do one thing well.
 
 ### 2. Idempotency
+
 Nodes should produce the same result when run multiple times with the same input.
 
 ### 3. Error Handling
+
 Every node should handle its specific errors and set appropriate actions.
 
 ### 4. State Management
+
 - Input validation in prep()
 - Core logic in exec()
 - Cleanup in post()
@@ -134,7 +151,9 @@ Every node should handle its specific errors and set appropriate actions.
 ## Store Design Patterns
 
 ### Namespacing
+
 Use prefixes to avoid key collisions:
+
 ```python
 store = {
     "user_input": {...},
@@ -144,7 +163,9 @@ store = {
 ```
 
 ### Status Tracking
+
 Maintain flow state:
+
 ```python
 store = {
     "flow_status": "processing",
@@ -155,7 +176,9 @@ store = {
 ```
 
 ### Error Context
+
 Preserve error information:
+
 ```python
 store = {
     "last_error": {
@@ -170,7 +193,9 @@ store = {
 ## Testing Flows
 
 ### Unit Testing Nodes
+
 Test each node in isolation:
+
 ```python
 def test_node_happy_path():
     node = MyNode()
@@ -180,7 +205,9 @@ def test_node_happy_path():
 ```
 
 ### Integration Testing Flows
+
 Test complete flow execution:
+
 ```python
 def test_flow_end_to_end():
     flow = MyFlow()
@@ -192,7 +219,9 @@ def test_flow_end_to_end():
 ## Performance Considerations
 
 ### 1. Async Operations
+
 Use async nodes for I/O operations:
+
 ```python
 class AsyncAPINode:
     async def exec(self, store):
@@ -202,7 +231,9 @@ class AsyncAPINode:
 ```
 
 ### 2. Resource Management
+
 Clean up resources in post():
+
 ```python
 def post(self, store):
     if "temp_file" in store:
@@ -211,7 +242,9 @@ def post(self, store):
 ```
 
 ### 3. Caching
+
 Implement caching for expensive operations:
+
 ```python
 def exec(self, store):
     cache_key = f"data_{store['user_id']}"
@@ -227,7 +260,9 @@ def exec(self, store):
 ## Monitoring and Debugging
 
 ### Logging
+
 Each node should log its execution:
+
 ```python
 import logging
 
@@ -241,14 +276,18 @@ def exec(self, store):
 ```
 
 ### Metrics
+
 Track key performance indicators:
+
 - Node execution time
 - Flow completion rate
 - Error frequency
 - Retry counts
 
 ### Debugging
+
 Use store snapshots:
+
 ```python
 def debug_flow(flow, initial_store):
     snapshots = []

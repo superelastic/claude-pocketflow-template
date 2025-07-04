@@ -18,11 +18,13 @@ Click the "Use this template" button above to create a new repository based on t
 ## Quick Start
 
 ### Prerequisites
+
 - Python 3.10+ (3.10, 3.11, or 3.12 supported)
 - UV package manager (installs automatically with setup script)
 - Anthropic API key for Claude integration
 
 ### One-Command Setup
+
 ```bash
 # Clone your repository (after using template)
 git clone <your-new-repository-url>
@@ -39,6 +41,7 @@ bash setup.sh
 ```
 
 The setup script will:
+
 - ✅ Check Python version compatibility
 - ✅ Install UV package manager if needed
 - ✅ Create virtual environment
@@ -48,6 +51,7 @@ The setup script will:
 - ✅ Run initial code quality checks
 
 ### Manual Setup (Alternative)
+
 ```bash
 # Install UV
 curl -LsSf https://astral.sh/uv/install.sh | sh
@@ -71,6 +75,7 @@ uv run pre-commit install
 ## 🛠️ Development
 
 ### Using the Makefile
+
 ```bash
 make help        # Show all available commands
 make test        # Run tests
@@ -82,6 +87,7 @@ make dev         # Run all checks (format, lint, type-check, test)
 ```
 
 ### Running Tests
+
 ```bash
 # Run all tests
 uv run pytest
@@ -97,6 +103,7 @@ uv run pytest -k "test_config"
 ```
 
 ### Code Quality Tools
+
 ```bash
 # Format code
 uv run ruff format .
@@ -112,6 +119,7 @@ uv run pre-commit run --all-files
 ```
 
 ## 📁 Project Structure
+
 ```
 claude-pocketflow-template/
 ├── src/
@@ -145,12 +153,14 @@ claude-pocketflow-template/
 ## 📚 Documentation
 
 ### For Developers
+
 - **[Developer Guide](docs/developer-guide.md)** - Complete guide to building with this template
 - **[Architecture](docs/architecture.md)** - System design, patterns, and best practices
 - **[API Reference](docs/api-reference.md)** - Detailed API documentation
 - **[Flow Design](docs/flow-design.md)** - PocketFlow patterns and examples
 
 ### For AI Assistants
+
 - **[CLAUDE.md](CLAUDE.md)** - Instructions for Claude Code and AI assistants
 - **[.cursorrules](.cursorrules)** - Cursor AI IDE integration rules
 - **[.mdc/](.mdc/)** - Framework-specific patterns and guidelines
@@ -160,16 +170,19 @@ claude-pocketflow-template/
 This template is optimized for AI-powered development:
 
 ### Cursor AI Integration
+
 - Custom rules in `.cursorrules` for project-specific assistance
 - Framework patterns in `.mdc/` directory
 - Automatic code formatting and linting
 
 ### Claude Code Support
+
 - Comprehensive `CLAUDE.md` with project guidelines
 - Test-driven development patterns
 - Clear documentation structure
 
 ### Development Workflow
+
 1. Use Cursor AI for code generation with project rules
 2. Run `make dev` to ensure code quality
 3. Use Claude Code for complex refactoring
@@ -178,12 +191,14 @@ This template is optimized for AI-powered development:
 ## 🧪 Testing Strategy
 
 The template includes a comprehensive test suite:
+
 - **Unit Tests**: Config management, daemon lifecycle
 - **Integration Tests**: Flow execution, error handling
 - **Performance Tests**: Concurrent operations, memory usage
 - **Edge Cases**: Error conditions, boundary testing
 
 Run tests with coverage:
+
 ```bash
 make test-cov
 # Opens HTML coverage report in browser
@@ -192,14 +207,18 @@ make test-cov
 ## 🚢 Deployment
 
 ### GitHub Actions CI/CD
+
 The template includes a complete CI/CD pipeline that:
+
 - Runs on Python 3.10, 3.11, and 3.12
 - Executes all tests with coverage reporting
 - Performs security scanning with pip-audit
 - Enforces code quality with pre-commit hooks
 
 ### Environment Variables
+
 Configure your deployment environment:
+
 ```bash
 ANTHROPIC_API_KEY=your_api_key_here
 DEBUG=false
@@ -220,6 +239,7 @@ LOGS_DIR=/path/to/logs
 6. Open a Pull Request
 
 ### Development Guidelines
+
 - Write tests for new features
 - Update documentation as needed
 - Follow the code style (enforced by Ruff)
@@ -238,12 +258,14 @@ LOGS_DIR=/path/to/logs
 ### Common Issues
 
 **UV Installation Fails**
+
 ```bash
 # Try installing with pip instead
 pip install uv
 ```
 
 **Import Errors**
+
 ```bash
 # Ensure you're in the virtual environment
 source .venv/bin/activate  # Linux/Mac
@@ -252,12 +274,14 @@ source .venv/bin/activate  # Linux/Mac
 ```
 
 **Type Checking Errors**
+
 ```bash
 # Update type stubs
 uv pip install types-requests types-pyyaml
 ```
 
 ### Getting Help
+
 - Check the [Developer Guide](docs/developer-guide.md)
 - Review the test files for usage examples
 - Open an issue for bugs or feature requests

@@ -27,6 +27,7 @@ config = Config(
 ```
 
 **Properties:**
+
 - `anthropic_api_key` (str): API key for Anthropic Claude
 - `debug` (bool): Enable debug mode (default: False)
 - `log_level` (str): Logging level (default: "INFO")
@@ -36,6 +37,7 @@ config = Config(
 - `logs_dir` (Path): Directory for logs (default: "logs")
 
 **Environment Variables:**
+
 - `ANTHROPIC_API_KEY`: Set API key
 - `DEBUG`: Enable debug mode ("true"/"false")
 - `LOG_LEVEL`: Set log level
@@ -67,21 +69,28 @@ await daemon.stop()
 **Methods:**
 
 #### `__init__(config: Config)`
+
 Initialize the daemon with configuration.
 
 #### `add_flow(name: str, flow: Flow) -> None`
+
 Add a flow to the daemon.
+
 - `name`: Unique identifier for the flow
 - `flow`: PocketFlow Flow instance
 
 #### `remove_flow(name: str) -> Optional[Flow]`
+
 Remove and return a flow from the daemon.
+
 - Returns: The removed flow or None if not found
 
 #### `async start() -> None`
+
 Start the daemon and initialize all flows.
 
 #### `async stop() -> None`
+
 Stop the daemon and clean up resources.
 
 ## PocketFlow Integration
@@ -96,20 +105,20 @@ from typing import Dict, Any
 
 class CustomNode(Node):
     """Custom node implementation."""
-    
+
     def __init__(self, config: Config):
         self.config = config
         self.logger = logger.bind(node=self.__class__.__name__)
-    
+
     async def run(self, context: Dict[str, Any]) -> Dict[str, Any]:
         """Execute node logic."""
         try:
             # Validate inputs
             self._validate_inputs(context)
-            
+
             # Process data
             result = await self._process(context)
-            
+
             # Return success
             return {
                 "status": "success",
@@ -166,14 +175,14 @@ The context dictionary passed between nodes:
 context = {
     # Input data
     "input": {...},
-    
+
     # Node results
     "node_name": {
         "status": "success",
         "output": {...},
         "timestamp": "2024-01-01T12:00:00Z"
     },
-    
+
     # Flow metadata
     "_flow_id": "unique-flow-id",
     "_start_time": datetime.now(),
@@ -218,9 +227,9 @@ async def daemon_with_flow(test_config, mock_flow):
 async def test_node_success():
     node = CustomNode(config)
     context = {"input": "test_data"}
-    
+
     result = await node.run(context)
-    
+
     assert result["status"] == "success"
     assert "output" in result
 
@@ -228,16 +237,16 @@ async def test_node_success():
 async def test_node_error():
     node = CustomNode(config)
     context = {}  # Missing required input
-    
+
     result = await node.run(context)
-    
+
     assert result["status"] == "validation_error"
     assert "error" in result
 
 # Test flow execution
 async def test_flow_execution(daemon_with_flow):
     await daemon_with_flow.start()
-    
+
     # Flow should be initialized
     assert "test_flow" in daemon_with_flow.flows
 ```
@@ -282,17 +291,17 @@ logger.error("Processing failed", error=str(e), node="CustomNode")
 ```python
 class RetryableNode(Node):
     """Node with retry capability."""
-    
+
     async def run(self, context: Dict[str, Any]) -> Dict[str, Any]:
         retries = context.get("_retries", {}).get(self.name, 0)
-        
+
         if retries >= self.config.max_retries:
             return {
                 "status": "max_retries_exceeded",
                 "error": f"Failed after {retries} attempts",
                 "next": "error_handler"
             }
-        
+
         try:
             result = await self._attempt_operation()
             return {"status": "success", "output": result}
@@ -317,7 +326,7 @@ async def process_batch(items: List[Any]) -> List[Any]:
     async def process_item(item):
         # Process individual item
         return await some_async_operation(item)
-    
+
     # Process all items concurrently
     tasks = [process_item(item) for item in items]
     return await asyncio.gather(*tasks)
@@ -325,14 +334,14 @@ async def process_batch(items: List[Any]) -> List[Any]:
 # Connection pooling
 class APINode(Node):
     """Node with connection pooling."""
-    
+
     def __init__(self, config: Config):
         self.config = config
         self.client = httpx.AsyncClient(
             limits=httpx.Limits(max_connections=10),
             timeout=httpx.Timeout(30.0)
         )
-    
+
     async def cleanup(self):
         """Clean up resources."""
         await self.client.aclose()

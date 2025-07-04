@@ -1,4 +1,5 @@
 """Tests to verify project setup is correct."""
+
 import sys
 from pathlib import Path
 
@@ -6,11 +7,11 @@ from pathlib import Path
 def test_imports():
     """Test that all core modules can be imported."""
     # These imports should not raise any errors
-    import src.nodes.base
-    import src.nodes.examples
-    import src.flows.base
-    import src.flows.examples
-    
+    import src.flows.base  # noqa: PLC0415
+    import src.flows.examples  # noqa: PLC0415
+    import src.nodes.base  # noqa: PLC0415
+    import src.nodes.examples  # noqa: PLC0415, F401
+
     assert True  # If we get here, imports worked
 
 
@@ -22,7 +23,7 @@ def test_python_version():
 def test_project_structure():
     """Test that expected directories exist."""
     project_root = Path(__file__).parent.parent
-    
+
     expected_dirs = [
         "src",
         "src/nodes",
@@ -34,7 +35,7 @@ def test_project_structure():
         "agents",
         ".mdc",
     ]
-    
+
     for dir_path in expected_dirs:
         full_path = project_root / dir_path
         assert full_path.exists(), f"Directory {dir_path} should exist"
@@ -44,7 +45,7 @@ def test_project_structure():
 def test_required_files():
     """Test that required files exist."""
     project_root = Path(__file__).parent.parent
-    
+
     required_files = [
         "README.md",
         "DEVELOPMENT_GUIDE.md",
@@ -57,7 +58,7 @@ def test_required_files():
         "docs/design.md",
         "docs/flow-design.md",
     ]
-    
+
     for file_path in required_files:
         full_path = project_root / file_path
         assert full_path.exists(), f"File {file_path} should exist"

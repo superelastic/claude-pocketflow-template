@@ -3,6 +3,7 @@
 ## Core PocketFlow Concepts
 
 ### 1. Node Architecture
+
 Nodes are the fundamental building blocks with three lifecycle methods:
 
 ```python
@@ -16,7 +17,7 @@ class NodeTemplate:
         Returns: Updated store with prep results
         """
         pass
-    
+
     def exec(self, store: dict) -> dict:
         """
         Execution phase:
@@ -26,7 +27,7 @@ class NodeTemplate:
         Returns: Store with execution results
         """
         pass
-    
+
     def post(self, store: dict) -> dict:
         """
         Post-processing phase:
@@ -41,6 +42,7 @@ class NodeTemplate:
 ### 2. Flow Patterns
 
 #### Action-Based Transitions
+
 ```python
 flow_definition = {
     "start": {
@@ -62,6 +64,7 @@ flow_definition = {
 ```
 
 #### Shared Store Pattern
+
 - All nodes share a common store dictionary
 - Store maintains state throughout flow execution
 - Keys should be namespaced to avoid conflicts
@@ -70,12 +73,14 @@ flow_definition = {
 ### 3. Utility Organization
 
 Each utility file in `utils/` should:
+
 - Handle one specific external service or API
 - Include error handling and retries
 - Provide a clean interface for nodes
 - Include comprehensive logging
 
 Example structure:
+
 ```python
 # utils/openai_client.py
 from typing import Dict, Any
@@ -86,7 +91,7 @@ logger = logging.getLogger(__name__)
 class OpenAIClient:
     def __init__(self, api_key: str):
         self.api_key = api_key
-    
+
     def chat_completion(self, messages: list) -> Dict[str, Any]:
         """Make a chat completion request"""
         try:
@@ -106,16 +111,17 @@ def main():
 ### 4. Self-Evaluation Nodes
 
 For uncertain outputs, implement self-evaluation:
+
 ```python
 class SelfEvaluatingNode:
     def exec(self, store: dict) -> dict:
         result = self._generate_output(store)
         evaluation = self._evaluate_output(result)
-        
+
         if evaluation["confidence"] < 0.8:
             store["needs_review"] = True
             store["evaluation"] = evaluation
-        
+
         store["result"] = result
         return store
 ```
@@ -154,13 +160,14 @@ class RobustNode:
         except Exception as e:
             store["status"] = "fatal_error"
             store["error"] = str(e)
-        
+
         return store
 ```
 
 ### 8. Agent Response Format
 
 When implementing agentic patterns, use structured responses:
+
 ```yaml
 thinking: |
   Analyzing the user request...

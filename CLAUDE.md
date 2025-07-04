@@ -5,6 +5,7 @@ This document contains critical information about working with this codebase. Fo
 ## Quick Reference
 
 ### Common Commands
+
 ```bash
 # Package Management
 uv add package                  # Install package
@@ -27,19 +28,21 @@ git commit --trailer "Github-Issue:#<number>"  # For GitHub issues
 ## Project Structure
 
 ### Documentation
+
 - `docs/design.md` - Product requirements, user stories, acceptance criteria
 - `docs/tasks/` - Task-master generated tasks (if using claude-task-master)
 - `.mdc/` - Cursor-specific rules and framework patterns
 
 ### Core Components
+
 - `config.py`: Configuration management
 - `daemon.py`: Main daemon
-[etc... fill in here]
+  [etc... fill in here]
 
 ## Core Development Rules
 
 1. Package Management
-   - Use UV for most operations, pip only for tools that might have uv compatibility 
+   - Use UV for most operations, pip only for tools that might have uv compatibility
      issues, or where documentation directs pip usage (PocketFlow requires `pip install pocketflow` per its documentation).
    - Installation: `uv add package`
    - Running tools: `uv run tool`
@@ -61,16 +64,18 @@ git commit --trailer "Github-Issue:#<number>"  # For GitHub issues
    - Bug fixes require regression tests
 
 4. Code Style
-    - PEP 8 naming (snake_case for functions/variables)
-    - Class names in PascalCase
-    - Constants in UPPER_SNAKE_CASE
-    - Document with docstrings
-    - Use f-strings for formatting
+   - PEP 8 naming (snake_case for functions/variables)
+   - Class names in PascalCase
+   - Constants in UPPER_SNAKE_CASE
+   - Document with docstrings
+   - Use f-strings for formatting
 
 - For commits fixing bugs or adding features based on user reports add:
+
   ```bash
   git commit --trailer "Reported-by:<name>"
   ```
+
   Where `<name>` is the name of the user.
 
 - For commits related to a Github issue, add
@@ -190,12 +195,14 @@ git commit --trailer "Github-Issue:#<number>"  # For GitHub issues
 ## Documentation Structure
 
 ### For AI/LLM Development
+
 - LLM Instructions: CLAUDE.md (this file), .cursorrules
 - Framework Patterns: `.mdc/` directory
 - Design Specifications: `docs/design.md`, `docs/flow-design.md`
 - Task Decomposition: `docs/tasks/` (if using task-master)
 
 ### For Human Developers
+
 - Getting Started: `README.md`
 - Developer Guide: `docs/developer-guide.md`
 - Architecture Overview: `docs/architecture.md`
@@ -204,6 +211,7 @@ git commit --trailer "Github-Issue:#<number>"  # For GitHub issues
 ## External Documentation
 
 For detailed information, refer to:
+
 - Product Requirements: `docs/design.md`
 - Flow Design Patterns: `docs/flow-design.md`
 - Framework Patterns: `.mdc/pocketflow-rules.md`

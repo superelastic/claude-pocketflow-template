@@ -1,6 +1,5 @@
 """Tests for configuration management."""
 
-import os
 import tempfile
 from pathlib import Path
 
@@ -122,7 +121,9 @@ class TestConfigValidation:
     def test_negative_timeout(self):
         """Test handling of negative timeout."""
         config = Config(anthropic_api_key="test", flow_timeout=-1)
-        assert config.flow_timeout == -1  # Should accept but may be handled by application logic
+        assert (
+            config.flow_timeout == -1
+        )  # Should accept but may be handled by application logic
 
     def test_negative_retries(self):
         """Test handling of negative retries."""
@@ -139,7 +140,7 @@ class TestConfigDirectories:
             data_dir = Path(temp_dir) / "test_data"
             logs_dir = Path(temp_dir) / "test_logs"
 
-            config = Config(
+            Config(
                 anthropic_api_key="test",
                 data_dir=data_dir,
                 logs_dir=logs_dir,
@@ -157,7 +158,7 @@ class TestConfigDirectories:
             nested_data = Path(temp_dir) / "deep" / "nested" / "data"
             nested_logs = Path(temp_dir) / "deep" / "nested" / "logs"
 
-            config = Config(
+            Config(
                 anthropic_api_key="test",
                 data_dir=nested_data,
                 logs_dir=nested_logs,
@@ -176,7 +177,7 @@ class TestConfigDirectories:
             data_dir.mkdir()
             logs_dir.mkdir()
 
-            config = Config(
+            Config(
                 anthropic_api_key="test",
                 data_dir=data_dir,
                 logs_dir=logs_dir,
